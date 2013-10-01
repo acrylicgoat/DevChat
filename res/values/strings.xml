@@ -1,0 +1,27 @@
+<resources>
+
+    <string name="app_name">Dev Chat</string>
+    <string name="title_activity_main">Dev Chat</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_delete_dev">Delete Developer</string>
+    <string name="menu_everyone">Everyone</string>
+    <string name="menu_export">Export</string>
+    <string name="menu_import">Import</string>
+    <string name="mimetype_text">text/plain</string>
+    <string name="shared_via"> Shared via Dev Chat.</string>
+    <string name="tell_friend">Tell a friend about </string>
+    <string name="no_data_msg">The note is empty, so nothing to share.</string>
+    <string name="today">Chat Note: </string>
+    <string name="scrumnotes_data">Dev Chat Data: </string>
+    <string name="no_devs">To get started, select Tools &#8212;> Developers and add some developers.</string>
+    <string name="no_yesterday">No data found.</string>
+    <string name="add_developer_hint">Developer name</string>
+    <string name="developer_list">Developer List</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="date">Date</string>
+    <string name="devactivity_title">Dev Chat - Developers</string>
+    <string name="no_name_msg">Name not entered, so nothing to save.</string>
+
+</resources>
