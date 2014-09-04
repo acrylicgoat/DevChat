@@ -23,5 +23,7 @@
     <string name="date">Date</string>
     <string name="devactivity_title">Dev Chat - Developers</string>
     <string name="no_name_msg">Name not entered, so nothing to save.</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drwaer Close</string>
 
 </resources>

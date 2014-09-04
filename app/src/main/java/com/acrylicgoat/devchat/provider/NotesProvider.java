@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * @author ed woodward
@@ -57,10 +58,13 @@ public class NotesProvider extends ContentProvider
      * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
      */
     @Override
-    public int delete(Uri arg0, String arg1, String[] arg2)
+    public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        // TODO Auto-generated method stub
-        return 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int count = db.delete(NOTES_TABLE, selection, selectionArgs);
+        Log.d("NotesProvider.delete()","count = " + count);
+        db.close();
+        return count;
     }
 
     /* (non-Javadoc)

@@ -16,7 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,12 +30,14 @@ import android.os.Environment;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.acrylicgoat.devchat.R;
 import com.acrylicgoat.devchat.beans.DevNote;
 import com.acrylicgoat.devchat.beans.Developer;
 import com.acrylicgoat.devchat.provider.DBUtils;
@@ -38,10 +45,6 @@ import com.acrylicgoat.devchat.provider.DatabaseHelper;
 import com.acrylicgoat.devchat.provider.Developers;
 import com.acrylicgoat.devchat.provider.Notes;
 import com.acrylicgoat.devchat.util.DevChatUtil;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 /**
  * @author ed woodward
@@ -49,19 +52,21 @@ import com.actionbarsherlock.view.MenuItem;
  * Activity to display notes taken.  They can be filtered by developer
  *
  */
-public class DataTableActivity extends SherlockActivity
+public class DataTableActivity extends Activity
 {
     ArrayList<DevNote> notes;
     ArrayList<Developer> devs;
     private static final int MENUITEM = Menu.FIRST;
     ActionBar aBar;
+    Context context;
+    String currentOwner;
     
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datatable);
-        aBar = getSupportActionBar();
+        aBar = getActionBar();
         aBar.setTitle("Dev Chat - Everyone");
         aBar.setDisplayHomeAsUpEnabled(true);
      // read database
@@ -70,11 +75,13 @@ public class DataTableActivity extends SherlockActivity
         {
         	getDeveloperNotes(devs.get(0).getName());
         	aBar.setTitle("Dev Chat - " + devs.get(0).getName());
+            currentOwner = devs.get(0).getName();
         }
         else
         {
         	readDB();
         }
+        context = this;
         setupTable();
     }
 
@@ -94,11 +101,43 @@ public class DataTableActivity extends SherlockActivity
                 TextView date = (TextView) fullRow.findViewById(R.id.date);
                 TextView devName = (TextView) fullRow.findViewById(R.id.devName);
                 TextView note = (TextView) fullRow.findViewById(R.id.description);
-                DevNote dev = (DevNote)notes.get(i);
+                DevNote dev = notes.get(i);
                 date.setText(dev.getDate());
                 devName.setText(dev.getDevName());
                 note.setText(dev.getNote());
                 Linkify.addLinks(note, Linkify.ALL);
+                fullRow.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    @Override
+                    public boolean onLongClick(View v) {
+                        TableRow SelectedRow;
+
+                        SelectedRow = (TableRow)v;
+
+                        TextView date = (TextView) SelectedRow.findViewById(R.id.date);
+                        final String dateStr = date.getText().toString();
+                        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                        alertDialog.setTitle("Delete Row");
+                        alertDialog.setMessage("Delete selected row dated " + dateStr + "?");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                deleteNote(dateStr);
+
+                            }
+                        });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                //do nothing
+
+                            } });
+                        alertDialog.show();
+                        return false;
+                    }
+                });
                 table.addView(fullRow);
                 
             }
@@ -114,8 +153,8 @@ public class DataTableActivity extends SherlockActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) 
     {
-        getSupportMenuInflater().inflate(R.menu.activity_devtable, menu);
-        //getDevelopers();
+        getMenuInflater().inflate(R.menu.activity_devtable, menu);
+
         if(devs != null && devs.size() > 0)
         {
             for (int i = 0; i < devs.size(); i++)
@@ -133,13 +172,13 @@ public class DataTableActivity extends SherlockActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         menu.clear();
-        getSupportMenuInflater().inflate(R.menu.activity_devtable, menu);
+        getMenuInflater().inflate(R.menu.activity_devtable, menu);
         getDevelopers();
         if(devs != null && devs.size() > 0)
         {
             for (int i = 0; i < devs.size(); i++)
             {
-                Developer dev = (Developer)devs.get(i);
+                Developer dev = devs.get(i);
                 menu.add(0, MENUITEM, 0, dev.getName());
                 
             }
@@ -148,7 +187,7 @@ public class DataTableActivity extends SherlockActivity
     }
     
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) 
+    public boolean onOptionsItemSelected(MenuItem item)
     {
         String title = (String) item.getTitle();
         if(item.getItemId() == R.id.share)
@@ -195,6 +234,7 @@ public class DataTableActivity extends SherlockActivity
         {
             getDeveloperNotes(title);
             setupTable();
+            currentOwner = title;
             aBar.setTitle("Dev Chat - " + title);
         }
 
@@ -283,6 +323,7 @@ public class DataTableActivity extends SherlockActivity
         //String fileName = "snExport.csv";
         File file = new File(snDir, sb.toString());
         String text = createTSV();
+        Log.d("DataTableActivity","file: "+ text);
         PrintWriter pw = null;
         
         try
@@ -311,7 +352,7 @@ public class DataTableActivity extends SherlockActivity
         StringBuilder csv = new StringBuilder();
         for (int i = 0; i < notes.size(); i++)
         {
-            DevNote dev = (DevNote)notes.get(i);
+            DevNote dev = notes.get(i);
             csv.append(dev.getDate());
             csv.append("\t");
             csv.append(dev.getDevName());
@@ -376,22 +417,7 @@ public class DataTableActivity extends SherlockActivity
     
     private String removeNewLines(String strToEdit)
     {
-        StringBuilder sb = new StringBuilder();
-        
-        int index= strToEdit.indexOf("Today:");
-        
-        if(index > -1)
-        {
-            sb.append(strToEdit.substring(0,index-2));
-            sb.append(" ");
-            sb.append(strToEdit.substring(index));
-        }
-        else
-        {
-            return strToEdit;
-        }
-        
-        return sb.toString();
+        return strToEdit.replace("\n"," ");
     }
     
     private String addNewLines(String strToEdit)
@@ -411,6 +437,13 @@ public class DataTableActivity extends SherlockActivity
         }
         
         return sb.toString();
+    }
+
+    private void deleteNote(String date)
+    {
+        getContentResolver().delete(Notes.CONTENT_URI, "date(notes_date)='"+date+"' and notes_owner='"+currentOwner+"'" , null);
+        getDeveloperNotes(currentOwner);
+        setupTable();
     }
 
 }
