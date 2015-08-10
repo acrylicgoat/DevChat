@@ -16,7 +16,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +41,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
-//import android.util.Log;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -126,13 +126,7 @@ public class MainActivity extends Activity
         // Set the list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        drawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(getString(R.string.app_name));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -174,40 +168,6 @@ public class MainActivity extends Activity
             }
         }
         getOwner(currentOwner);
-//        SpinnerAdapter mSpinnerAdapter;
-//        if(Build.VERSION.SDK_INT <= 10)
-//        {
-//            mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.nav_list,android.R.layout.simple_spinner_item);
-//        }
-//        else
-//        {
-//            mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.nav_list,android.R.layout.simple_spinner_dropdown_item);
-//        }
-//        ActionBar.OnNavigationListener mOnNavigationListener = new ActionBar.OnNavigationListener()
-//        {
-//            // Get the same strings provided for the drop-down's ArrayAdapter
-//            String[] strings = getResources().getStringArray(R.array.nav_list);
-//
-//            @Override
-//            public boolean onNavigationItemSelected(int position, long itemId)
-//            {
-//                switch (position)
-//                {
-//                    case 1:
-//                        Intent devIntent = new Intent(getApplicationContext(), DevActivity.class);
-//                        startActivity(devIntent);
-//                        break;
-//
-//                    case 2:
-//                        Intent reportIntent = new Intent(getApplicationContext(), DataTableActivity.class);
-//                        startActivity(reportIntent);
-//                        break;
-//                }
-//
-//                return true;
-//            }
-//        };
-//        aBar.setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
 
         return true;
     }
@@ -274,7 +234,6 @@ public class MainActivity extends Activity
     public void onResume()
     {
         super.onResume();
-        //aBar.setSelectedNavigationItem(0);
         readDB();
         if(Build.VERSION.SDK_INT > 10 && devs != null && devs.size() > 0)
         {
@@ -315,7 +274,6 @@ public class MainActivity extends Activity
     private void getOwner(String owner)
     {
         //Log.d("MainActivity", "getOwner() called: " + owner);
-        //getYesterday(owner);
         getToday(owner);
         devName.setText(currentOwner);
 
@@ -351,7 +309,7 @@ public class MainActivity extends Activity
 
     private void getToday(String owner)
     {
-        //Log.d("MainActivity", "getToday() called: " + owner);
+        Log.d("MainActivity", "getToday() called: " + owner);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -478,19 +436,19 @@ public class MainActivity extends Activity
 
     private void setDrawer(String[] items)
     {
-        HashMap hm1 = new HashMap<String,String>();
+        HashMap hm1 = new HashMap();
         hm1.put("nav_icon",Integer.toString(R.drawable.home));
         hm1.put("nav_item",items[0]);
 
-        HashMap hm2 = new HashMap<String,String>();
+        HashMap hm2 = new HashMap();
         hm2.put("nav_icon",Integer.toString(R.drawable.dev));
         hm2.put("nav_item",items[1]);
 
-        HashMap hm3 = new HashMap<String,String>();
+        HashMap hm3 = new HashMap();
         hm3.put("nav_icon",Integer.toString(R.drawable.dev));
         hm3.put("nav_item",items[2]);
 
-        navTitles = new ArrayList<HashMap<String,String>>();
+        navTitles = new ArrayList();
 
         navTitles.add(hm1);
         navTitles.add(hm2);
