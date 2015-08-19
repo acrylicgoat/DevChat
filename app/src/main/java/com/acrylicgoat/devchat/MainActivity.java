@@ -7,12 +7,15 @@
 package com.acrylicgoat.devchat;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 //import java.util.Calendar;
 import java.util.Collections;
 //import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -287,7 +290,7 @@ public class MainActivity extends Activity
         sb.append("select notes_note, date(notes_date) as notes_date from notes where notes_owner='");
         sb.append(currentOwner);
 
-        sb.append("' and date(notes_date)<=date('now','localtime','-1 day') order by date(notes_date) desc");
+        sb.append("' and date(notes_date)<=date('now','-1 day','localtime') order by date(notes_date) desc");
 
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -355,6 +358,9 @@ public class MainActivity extends Activity
 
         values.put(Notes.NOTE, text);
         values.put(Notes.OWNER, currentOwner);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        values.put(Notes.DATE, dateFormat.format(date));
 
         //check if a note already exists for today
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
@@ -368,7 +374,7 @@ public class MainActivity extends Activity
             sb.append(escape(text));
             sb.append("' where notes_owner='");
             sb.append(currentOwner);
-            sb.append("' and date(notes_date) = date('now','localtime')");
+            sb.append("' and date(notes_date) = strftime('%Y-%m-%d', 'now','localtime')");
             dbHelper.getReadableDatabase().execSQL(sb.toString());
         }
         else
@@ -385,7 +391,8 @@ public class MainActivity extends Activity
         StringBuilder sb = new StringBuilder();
         sb.append("select notes_note from notes where notes_owner='");
         sb.append(currentOwner);
-        sb.append("' and date(notes_date) = date('now','localtime')");
+        sb.append("' and date(notes_date) = strftime('%Y-%m-%d', 'now','localtime')");
+        Log.d("SQL", sb.toString());
         return sb.toString();
     }
 
