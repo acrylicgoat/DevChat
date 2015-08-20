@@ -15,6 +15,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/calendarButton"
                 android:background="@color/white_text"
+                android:paddingLeft="10dp"
                 android:text="Developer"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/green"
@@ -28,7 +29,7 @@
                 android:layout_gravity="fill_horizontal"
                 android:layout_centerHorizontal="true"
                 android:background="@color/white_text"
-                android:padding="6dp"
+                android:padding="10dp"
                 android:layout_alignParentTop="true"
                 android:src="@drawable/calendar" />
 
@@ -39,6 +40,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/devName"
                 android:background="@color/green"
+                android:paddingLeft="10dp"
                 android:text="@string/today"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/white_text" />
@@ -52,7 +54,7 @@
                 android:ems="10"
                 android:gravity="top|left"
                 android:inputType="textCapSentences|textMultiLine"
-                android:lines="20"
+                android:lines="200"
                 android:singleLine="false" >
 
 
