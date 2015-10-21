@@ -85,13 +85,80 @@ public class DataTableActivity extends Activity
         setupTable();
     }
 
+//    private void setupTable()
+//    {
+//        //get table row objects
+//        TableLayout table = (TableLayout) this.findViewById(R.id.tablelayout);
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
+//        table.removeAllViews();
+//
+//        //loop through data and create rows
+//        if(notes.size() > 0)
+//        {
+//            for (int i = 0; i < notes.size(); i++)
+//            {
+//                View fullRow = inflater.inflate(R.layout.table_row, null, false);
+//                TextView date = (TextView) fullRow.findViewById(R.id.date);
+//                TextView devName = (TextView) fullRow.findViewById(R.id.devName);
+//                TextView note = (TextView) fullRow.findViewById(R.id.description);
+//                DevNote dev = notes.get(i);
+//                date.setText(dev.getDate());
+//                devName.setText(dev.getDevName());
+//                note.setText(dev.getNote());
+//                Linkify.addLinks(note, Linkify.ALL);
+//                fullRow.setOnLongClickListener(new View.OnLongClickListener() {
+//
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        TableRow SelectedRow;
+//
+//                        SelectedRow = (TableRow)v;
+//
+//                        TextView date = (TextView) SelectedRow.findViewById(R.id.date);
+//                        final String dateStr = date.getText().toString();
+//                        final String name = devName.getText().toString();
+//
+//                        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+//                        alertDialog.setTitle("Delete Row");
+//                        alertDialog.setMessage("Delete selected row dated " + dateStr + "?");
+//                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener()
+//                        {
+//                            public void onClick(DialogInterface dialog, int which)
+//                            {
+//                                deleteNote(dateStr, name);
+//
+//                            }
+//                        });
+//                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()
+//                        {
+//                            public void onClick(DialogInterface dialog, int which)
+//                            {
+//                                //do nothing
+//
+//                            } });
+//                        alertDialog.show();
+//                        return false;
+//                    }
+//                });
+//                table.addView(fullRow);
+//
+//            }
+//
+//        }
+//        else
+//        {
+//            Toast.makeText(DataTableActivity.this, "No data to display",  Toast.LENGTH_LONG).show();
+//        }
+//
+//    }
+
     private void setupTable()
     {
         //get table row objects
         TableLayout table = (TableLayout) this.findViewById(R.id.tablelayout);
         LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
         table.removeAllViews();
-        
+
         //loop through data and create rows
         if(notes.size() > 0)
         {
@@ -101,6 +168,7 @@ public class DataTableActivity extends Activity
                 TextView date = (TextView) fullRow.findViewById(R.id.date);
                 TextView devName = (TextView) fullRow.findViewById(R.id.devName);
                 TextView note = (TextView) fullRow.findViewById(R.id.description);
+                note.setAutoLinkMask(Linkify.ALL);
                 DevNote dev = notes.get(i);
                 date.setText(dev.getDate());
                 devName.setText(dev.getDevName());
@@ -108,14 +176,18 @@ public class DataTableActivity extends Activity
                 Linkify.addLinks(note, Linkify.ALL);
                 fullRow.setOnLongClickListener(new View.OnLongClickListener() {
 
-                    @Override
+                    //@Override
                     public boolean onLongClick(View v) {
                         TableRow SelectedRow;
+
 
                         SelectedRow = (TableRow)v;
 
                         TextView date = (TextView) SelectedRow.findViewById(R.id.date);
+                        TextView devName = (TextView) SelectedRow.findViewById(R.id.devName);
                         final String dateStr = date.getText().toString();
+                        final String name = devName.getText().toString();
+
                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                         alertDialog.setTitle("Delete Row");
                         alertDialog.setMessage("Delete selected row dated " + dateStr + "?");
@@ -123,7 +195,7 @@ public class DataTableActivity extends Activity
                         {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                deleteNote(dateStr);
+                                deleteNote(dateStr, name);
 
                             }
                         });
@@ -139,15 +211,15 @@ public class DataTableActivity extends Activity
                     }
                 });
                 table.addView(fullRow);
-                
+
             }
-            
+
         }
         else
         {
             Toast.makeText(DataTableActivity.this, "No data to display",  Toast.LENGTH_LONG).show();
         }
-        
+
     }
     
     @Override
@@ -159,7 +231,7 @@ public class DataTableActivity extends Activity
         {
             for (int i = 0; i < devs.size(); i++)
             {
-                Developer dev = (Developer)devs.get(i);
+                Developer dev = devs.get(i);
                 
                 menu.add(0, MENUITEM, 0, dev.getName()).setIcon(R.drawable.dev);
                 
@@ -244,7 +316,7 @@ public class DataTableActivity extends Activity
     private void getDeveloperNotes(String name)
     {
         notes = new ArrayList<DevNote>();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(125);
         sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes where notes_owner='" + name + "' order by date(notes_date) desc");
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -268,6 +340,7 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         
     }
     
@@ -296,15 +369,17 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
+		db.close();
+		
           
-         Collections.sort((List<Developer>)devs);
+         Collections.sort(devs);
               
     }
     
     private void readDB()
     {
-        notes = new ArrayList<DevNote>();
-        StringBuilder sb = new StringBuilder();
+        notes = new ArrayList<>();
+        StringBuilder sb = new StringBuilder(100);
         sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes order by date(notes_date) desc");
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -328,7 +403,8 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
-            
+        db.close();
+
     }
     
     private void exportReport()
@@ -461,11 +537,12 @@ public class DataTableActivity extends Activity
         return sb.toString();
     }
 
-    private void deleteNote(String date)
+    private void deleteNote(String date, String name)
     {
-        getContentResolver().delete(Notes.CONTENT_URI, "date(notes_date)='"+date+"' and notes_owner='"+currentOwner+"'" , null);
+        getContentResolver().delete(Notes.CONTENT_URI, "date(notes_date)='"+date+"' and notes_owner='"+name+"'" , null);
         getDeveloperNotes(currentOwner);
         setupTable();
+        aBar.setTitle("Dev Chat -  " + currentOwner);
     }
 
 }
