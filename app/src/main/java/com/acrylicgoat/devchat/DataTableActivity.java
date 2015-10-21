@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -40,9 +39,7 @@ import android.widget.Toast;
 
 import com.acrylicgoat.devchat.beans.DevNote;
 import com.acrylicgoat.devchat.beans.Developer;
-import com.acrylicgoat.devchat.provider.DBUtils;
 import com.acrylicgoat.devchat.provider.DatabaseHelper;
-import com.acrylicgoat.devchat.provider.Developers;
 import com.acrylicgoat.devchat.provider.Notes;
 import com.acrylicgoat.devchat.util.DevChatUtil;
 
@@ -84,73 +81,6 @@ public class DataTableActivity extends Activity
         context = this;
         setupTable();
     }
-
-//    private void setupTable()
-//    {
-//        //get table row objects
-//        TableLayout table = (TableLayout) this.findViewById(R.id.tablelayout);
-//        LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
-//        table.removeAllViews();
-//
-//        //loop through data and create rows
-//        if(notes.size() > 0)
-//        {
-//            for (int i = 0; i < notes.size(); i++)
-//            {
-//                View fullRow = inflater.inflate(R.layout.table_row, null, false);
-//                TextView date = (TextView) fullRow.findViewById(R.id.date);
-//                TextView devName = (TextView) fullRow.findViewById(R.id.devName);
-//                TextView note = (TextView) fullRow.findViewById(R.id.description);
-//                DevNote dev = notes.get(i);
-//                date.setText(dev.getDate());
-//                devName.setText(dev.getDevName());
-//                note.setText(dev.getNote());
-//                Linkify.addLinks(note, Linkify.ALL);
-//                fullRow.setOnLongClickListener(new View.OnLongClickListener() {
-//
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        TableRow SelectedRow;
-//
-//                        SelectedRow = (TableRow)v;
-//
-//                        TextView date = (TextView) SelectedRow.findViewById(R.id.date);
-//                        final String dateStr = date.getText().toString();
-//                        final String name = devName.getText().toString();
-//
-//                        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-//                        alertDialog.setTitle("Delete Row");
-//                        alertDialog.setMessage("Delete selected row dated " + dateStr + "?");
-//                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener()
-//                        {
-//                            public void onClick(DialogInterface dialog, int which)
-//                            {
-//                                deleteNote(dateStr, name);
-//
-//                            }
-//                        });
-//                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()
-//                        {
-//                            public void onClick(DialogInterface dialog, int which)
-//                            {
-//                                //do nothing
-//
-//                            } });
-//                        alertDialog.show();
-//                        return false;
-//                    }
-//                });
-//                table.addView(fullRow);
-//
-//            }
-//
-//        }
-//        else
-//        {
-//            Toast.makeText(DataTableActivity.this, "No data to display",  Toast.LENGTH_LONG).show();
-//        }
-//
-//    }
 
     private void setupTable()
     {
@@ -346,7 +276,7 @@ public class DataTableActivity extends Activity
     
     private void getDevelopers()
     {
-        Log.d("DataTableActivity.getDevelopers()","called");
+        //Log.d("DatTbleActy.getDevs()","called");
          //devs = DBUtils.readCursorIntoList(getContentResolver().query(Developers.CONTENT_URI, null, null, null, null));
         devs = new ArrayList<Developer>();
         StringBuilder sb = new StringBuilder();
@@ -433,7 +363,7 @@ public class DataTableActivity extends Activity
         }
         catch (FileNotFoundException e)
         {
-            Log.d("DataTableActivity", "Error exporting note: " + e.toString(), e);
+            //Log.d("DataTableActivity", "Error exporting note: " + e.toString(), e);
             Toast.makeText(this, "Error exporting note: " + e.toString(), Toast.LENGTH_LONG).show();
         }
         finally

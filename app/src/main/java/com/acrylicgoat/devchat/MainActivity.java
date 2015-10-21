@@ -9,9 +9,7 @@ package com.acrylicgoat.devchat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-//import java.util.Calendar;
 import java.util.Collections;
-//import java.util.GregorianCalendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +28,6 @@ import com.acrylicgoat.devchat.provider.DBUtils;
 import com.acrylicgoat.devchat.provider.DatabaseHelper;
 import com.acrylicgoat.devchat.provider.Developers;
 import com.acrylicgoat.devchat.provider.Notes;
-//import com.acrylicgoat.devchat.R;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -60,7 +57,6 @@ public class MainActivity extends Activity
     private Cursor cursor;
     private EditText today;
     private String currentOwner;
-    private ImageButton yesterday;
     ActionBar aBar;
     ArrayList<Developer> devs;
     private TextView devName;
@@ -106,7 +102,7 @@ public class MainActivity extends Activity
             }
         });
         devName = (TextView) findViewById(R.id.devName);
-        yesterday = (ImageButton)findViewById(R.id.calendarButton);
+        ImageButton yesterday = (ImageButton)findViewById(R.id.calendarButton);
         yesterday.setOnClickListener(new OnClickListener()
         {
 
@@ -132,19 +128,18 @@ public class MainActivity extends Activity
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(getString(R.string.app_name));
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 getActionBar().setTitle(getString(R.string.app_name));
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
         };
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerToggle.syncState();
         drawerLayout.setDrawerListener(drawerToggle);
         aBar.setTitle(getString(R.string.app_name));
-        //aBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         aBar.setDisplayHomeAsUpEnabled(true);
         aBar.setHomeButtonEnabled(true);
         drawerList.setAdapter(sAdapter);

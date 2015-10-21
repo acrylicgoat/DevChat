@@ -61,7 +61,7 @@ public class NotesProvider extends ContentProvider
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int count = db.delete(NOTES_TABLE, selection, selectionArgs);
-        Log.d("NotesProvider.delete()","count = " + count);
+        //Log.d("NotesProvider.delete()","count = " + count);
         db.close();
         return count;
     }
@@ -83,7 +83,7 @@ public class NotesProvider extends ContentProvider
     public Uri insert(Uri uri, ContentValues values)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long rowId = db.insert(NOTES_TABLE, null, new ContentValues(values));
+        db.insert(NOTES_TABLE, null, new ContentValues(values));
         db.close();
         return null;
     }

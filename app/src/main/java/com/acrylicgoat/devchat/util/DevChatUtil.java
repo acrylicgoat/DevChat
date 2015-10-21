@@ -23,18 +23,14 @@ public class DevChatUtil
     {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         Date date = new Date();
-        String today = dateFormat.format(date);
-        
-        return today;
+        return dateFormat.format(date);
     }
     
     public static String getFileDate()
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
         Date date = new Date();
-        String today = dateFormat.format(date);
-        
-        return today;
+        return dateFormat.format(date);
     }
 
 }

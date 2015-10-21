@@ -18,7 +18,7 @@ import android.provider.BaseColumns;
  */
 public class Notes implements BaseColumns
 {
-    /** Private constructor.  Cannot instanciate this class */
+    /** Private constructor.  Cannot instantiate this class */
     private Notes()
     {
         
