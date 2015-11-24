@@ -64,14 +64,14 @@ public class DataTableActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datatable);
         aBar = getActionBar();
-        aBar.setTitle("Dev Chat - Everyone");
+        aBar.setTitle(getString(R.string.app_name) + " - Everyone");
         aBar.setDisplayHomeAsUpEnabled(true);
      // read database
         getDevelopers();
         if(devs != null)
         {
         	getDeveloperNotes(devs.get(0).getName());
-        	aBar.setTitle("Dev Chat - " + devs.get(0).getName());
+        	aBar.setTitle(getString(R.string.app_name) + " - " + devs.get(0).getName());
             currentOwner = devs.get(0).getName();
         }
         else
@@ -198,7 +198,7 @@ public class DataTableActivity extends Activity
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType(getString(R.string.mimetype_text));
 
-            if(data != null && (!data.equals("")))
+            if(!data.equals(""))
             {
                 String today = DevChatUtil.getTodaysDate();
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.scrumnotes_data) + " " + today);
@@ -216,7 +216,7 @@ public class DataTableActivity extends Activity
         {
             readDB();
             setupTable();
-            aBar.setTitle("Dev Chat - Everyone");
+            aBar.setTitle(getString(R.string.app_name) +" - Everyone");
         }
         else if(item.getItemId() == R.id.export)
         {
@@ -237,7 +237,7 @@ public class DataTableActivity extends Activity
             getDeveloperNotes(title);
             setupTable();
             currentOwner = title;
-            aBar.setTitle("Dev Chat - " + title);
+            aBar.setTitle(getString(R.string.app_name) +" - " + title);
         }
 
         return true;
@@ -245,12 +245,11 @@ public class DataTableActivity extends Activity
     
     private void getDeveloperNotes(String name)
     {
-        notes = new ArrayList<DevNote>();
-        StringBuilder sb = new StringBuilder(125);
-        sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes where notes_owner='" + name + "' order by date(notes_date) desc");
+        notes = new ArrayList<>();
+        String sql = "select date(notes_date) as notes_date, notes_owner, notes_note from notes where notes_owner='" + name + "' order by date(notes_date) desc";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sql, null);
         int noteColumn = cursor.getColumnIndex(Notes.NOTE);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         int dateColumn = cursor.getColumnIndex(Notes.DATE);
@@ -278,12 +277,11 @@ public class DataTableActivity extends Activity
     {
         //Log.d("DatTbleActy.getDevs()","called");
          //devs = DBUtils.readCursorIntoList(getContentResolver().query(Developers.CONTENT_URI, null, null, null, null));
-        devs = new ArrayList<Developer>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("select distinct notes_owner from notes");
+        devs = new ArrayList<>();
+        String sql = "select distinct notes_owner from notes";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sql, null);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         if(cursor.getCount()>0)
         {
@@ -309,11 +307,10 @@ public class DataTableActivity extends Activity
     private void readDB()
     {
         notes = new ArrayList<>();
-        StringBuilder sb = new StringBuilder(100);
-        sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes order by date(notes_date) desc");
+        String sqlString = "select date(notes_date) as notes_date, notes_owner, notes_note from notes order by date(notes_date) desc";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sqlString, null);
         int noteColumn = cursor.getColumnIndex(Notes.NOTE);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         int dateColumn = cursor.getColumnIndex(Notes.DATE);
