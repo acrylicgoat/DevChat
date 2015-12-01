@@ -34,7 +34,6 @@ import com.acrylicgoat.devchat.util.DevChatUtil;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -115,14 +114,11 @@ public class MainActivity extends Activity
             }
         });
 
-        //String[] items = getResources().getStringArray(R.array.nav_list);
         List<HashMap<String,String>> navTitles = DevChatUtil.setNavDrawer(this);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerList = (ListView)findViewById(R.id.left_drawer);
         SimpleAdapter sAdapter = new SimpleAdapter(this,navTitles, R.layout.nav_drawer,from,to);
 
-        // Set the adapter for the list view
-        //drawerList.setAdapter(new ArrayAdapter<String>(this,R.layout.drawer_list_item, navTitles));
         // Set the list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener(this, drawerLayout));
 
@@ -408,55 +404,5 @@ public class MainActivity extends Activity
         Collections.sort(devs);
 
     }
-
-//    private void selectItem(int position)
-//    {
-//        switch (position)
-//        {
-//            case 0:
-//                drawerLayout.closeDrawers();
-//                break;
-//            case 1:
-//                Intent devIntent = new Intent(getApplicationContext(), DevActivity.class);
-//                startActivity(devIntent);
-//                break;
-//
-//            case 2:
-//                Intent reportIntent = new Intent(getApplicationContext(), DataTableActivity.class);
-//                startActivity(reportIntent);
-//                break;
-//        }
-//    }
-
-//    private class DrawerItemClickListener implements ListView.OnItemClickListener
-//    {
-//        @Override
-//        public void onItemClick(AdapterView parent, View view, int position, long id)
-//        {
-//            selectItem(position);
-//        }
-//    }
-
-//    private void setDrawer(String[] items)
-//    {
-//        HashMap hm1 = new HashMap();
-//        hm1.put("nav_icon",Integer.toString(R.drawable.home));
-//        hm1.put("nav_item",items[0]);
-//
-//        HashMap hm2 = new HashMap();
-//        hm2.put("nav_icon",Integer.toString(R.drawable.dev));
-//        hm2.put("nav_item",items[1]);
-//
-//        HashMap hm3 = new HashMap();
-//        hm3.put("nav_icon",Integer.toString(R.drawable.dev));
-//        hm3.put("nav_item",items[2]);
-//
-//        navTitles = new ArrayList();
-//
-//        navTitles.add(hm1);
-//        navTitles.add(hm2);
-//        navTitles.add(hm3);
-//    }
-
 
 }
