@@ -26,5 +26,7 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
     <string name="current_owner">currentOwner</string>
+    <string name="nav_icon">nav_icon</string>
+    <string name="nav_item">nav_item</string>
 
 </resources>

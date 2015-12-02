@@ -44,16 +44,16 @@ public class DevChatUtil
     {
         String[] items = context.getResources().getStringArray(R.array.nav_list);
         HashMap hm1 = new HashMap<>();
-        hm1.put("nav_icon",Integer.toString(R.drawable.home));
-        hm1.put("nav_item",items[0]);
+        hm1.put(context.getString(R.string.nav_icon),Integer.toString(R.drawable.home));
+        hm1.put(context.getString(R.string.nav_item),items[0]);
 
         HashMap hm2 = new HashMap<>();
-        hm2.put("nav_icon",Integer.toString(R.drawable.dev));
-        hm2.put("nav_item",items[1]);
+        hm2.put(context.getString(R.string.nav_icon), Integer.toString(R.drawable.dev));
+        hm2.put(context.getString(R.string.nav_item),items[1]);
 
         HashMap hm3 = new HashMap<>();
-        hm3.put("nav_icon",Integer.toString(R.drawable.dev));
-        hm3.put("nav_item",items[2]);
+        hm3.put(context.getString(R.string.nav_icon), Integer.toString(R.drawable.dev));
+        hm3.put(context.getString(R.string.nav_item),items[2]);
 
         ArrayList navTitles = new ArrayList();
 
