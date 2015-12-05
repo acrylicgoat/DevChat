@@ -23,7 +23,7 @@ import android.net.Uri;
  */
 public class DevelopersProvider extends ContentProvider
 {
-    public static final String AUTHORITY = "com.acrylicgoat.devchat.providers.DevelopersProvider";
+   // public static final String AUTHORITY = "com.acrylicgoat.devchat.providers.DevelopersProvider";
     /** notes table name */
     protected static final String DEVELOPERS_TABLE = "developers";
     /** Map of Notes table columns */
@@ -32,7 +32,7 @@ public class DevelopersProvider extends ContentProvider
     /** static section to initialize notes table map */
     static
     {
-        DevelopersProjectionMap = new HashMap<String,String>();
+        DevelopersProjectionMap = new HashMap<>();
         DevelopersProjectionMap.put(Developers.ID, Developers.ID);
         DevelopersProjectionMap.put(Developers.NAME, Developers.NAME);
     }

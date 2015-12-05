@@ -8,7 +8,6 @@ package com.acrylicgoat.devchat;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -109,7 +108,7 @@ public class DevActivity extends Activity
               
               devs = DBUtils.readCursorIntoList(getContentResolver().query(Developers.CONTENT_URI, null, null, null, null));
               
-             Collections.sort((List<Developer>)devs);
+             Collections.sort(devs);
               
              fillData(devs);
              
@@ -142,7 +141,7 @@ public class DevActivity extends Activity
                   devName.setText("");
 
                   devs.add(dev);
-                  Collections.sort((List<Developer>)devs);
+                  Collections.sort(devs);
                   adapter.notifyDataSetChanged();
                   
               }
@@ -185,9 +184,7 @@ public class DevActivity extends Activity
         
         values.put(Developers.NAME, name);
 
-        //values.put(Developers.SCRUMMASTER, isScrummaster);
-
-        try 
+        try
         {
             
             getContentResolver().insert(Developers.CONTENT_URI, values);

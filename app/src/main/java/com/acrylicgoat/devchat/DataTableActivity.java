@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -40,9 +39,7 @@ import android.widget.Toast;
 
 import com.acrylicgoat.devchat.beans.DevNote;
 import com.acrylicgoat.devchat.beans.Developer;
-import com.acrylicgoat.devchat.provider.DBUtils;
 import com.acrylicgoat.devchat.provider.DatabaseHelper;
-import com.acrylicgoat.devchat.provider.Developers;
 import com.acrylicgoat.devchat.provider.Notes;
 import com.acrylicgoat.devchat.util.DevChatUtil;
 
@@ -67,14 +64,14 @@ public class DataTableActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_datatable);
         aBar = getActionBar();
-        aBar.setTitle("Dev Chat - Everyone");
+        aBar.setTitle(getString(R.string.app_name) + " - Everyone");
         aBar.setDisplayHomeAsUpEnabled(true);
      // read database
         getDevelopers();
         if(devs != null)
         {
         	getDeveloperNotes(devs.get(0).getName());
-        	aBar.setTitle("Dev Chat - " + devs.get(0).getName());
+        	aBar.setTitle(getString(R.string.app_name) + " - " + devs.get(0).getName());
             currentOwner = devs.get(0).getName();
         }
         else
@@ -91,7 +88,7 @@ public class DataTableActivity extends Activity
         TableLayout table = (TableLayout) this.findViewById(R.id.tablelayout);
         LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
         table.removeAllViews();
-        
+
         //loop through data and create rows
         if(notes.size() > 0)
         {
@@ -101,6 +98,7 @@ public class DataTableActivity extends Activity
                 TextView date = (TextView) fullRow.findViewById(R.id.date);
                 TextView devName = (TextView) fullRow.findViewById(R.id.devName);
                 TextView note = (TextView) fullRow.findViewById(R.id.description);
+                note.setAutoLinkMask(Linkify.ALL);
                 DevNote dev = notes.get(i);
                 date.setText(dev.getDate());
                 devName.setText(dev.getDevName());
@@ -108,14 +106,18 @@ public class DataTableActivity extends Activity
                 Linkify.addLinks(note, Linkify.ALL);
                 fullRow.setOnLongClickListener(new View.OnLongClickListener() {
 
-                    @Override
+                    //@Override
                     public boolean onLongClick(View v) {
                         TableRow SelectedRow;
+
 
                         SelectedRow = (TableRow)v;
 
                         TextView date = (TextView) SelectedRow.findViewById(R.id.date);
+                        TextView devName = (TextView) SelectedRow.findViewById(R.id.devName);
                         final String dateStr = date.getText().toString();
+                        final String name = devName.getText().toString();
+
                         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                         alertDialog.setTitle("Delete Row");
                         alertDialog.setMessage("Delete selected row dated " + dateStr + "?");
@@ -123,7 +125,7 @@ public class DataTableActivity extends Activity
                         {
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                deleteNote(dateStr);
+                                deleteNote(dateStr, name);
 
                             }
                         });
@@ -139,15 +141,15 @@ public class DataTableActivity extends Activity
                     }
                 });
                 table.addView(fullRow);
-                
+
             }
-            
+
         }
         else
         {
             Toast.makeText(DataTableActivity.this, "No data to display",  Toast.LENGTH_LONG).show();
         }
-        
+
     }
     
     @Override
@@ -159,7 +161,7 @@ public class DataTableActivity extends Activity
         {
             for (int i = 0; i < devs.size(); i++)
             {
-                Developer dev = (Developer)devs.get(i);
+                Developer dev = devs.get(i);
                 
                 menu.add(0, MENUITEM, 0, dev.getName()).setIcon(R.drawable.dev);
                 
@@ -196,7 +198,7 @@ public class DataTableActivity extends Activity
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType(getString(R.string.mimetype_text));
 
-            if(data != null && (!data.equals("")))
+            if(!data.equals(""))
             {
                 String today = DevChatUtil.getTodaysDate();
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.scrumnotes_data) + " " + today);
@@ -214,7 +216,7 @@ public class DataTableActivity extends Activity
         {
             readDB();
             setupTable();
-            aBar.setTitle("Dev Chat - Everyone");
+            aBar.setTitle(getString(R.string.app_name) +" - Everyone");
         }
         else if(item.getItemId() == R.id.export)
         {
@@ -235,7 +237,7 @@ public class DataTableActivity extends Activity
             getDeveloperNotes(title);
             setupTable();
             currentOwner = title;
-            aBar.setTitle("Dev Chat - " + title);
+            aBar.setTitle(getString(R.string.app_name) +" - " + title);
         }
 
         return true;
@@ -243,12 +245,11 @@ public class DataTableActivity extends Activity
     
     private void getDeveloperNotes(String name)
     {
-        notes = new ArrayList<DevNote>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes where notes_owner='" + name + "' order by date(notes_date) desc");
+        notes = new ArrayList<>();
+        String sql = "select date(notes_date) as notes_date, notes_owner, notes_note from notes where notes_owner='" + name + "' order by date(notes_date) desc";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sql, null);
         int noteColumn = cursor.getColumnIndex(Notes.NOTE);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         int dateColumn = cursor.getColumnIndex(Notes.DATE);
@@ -268,19 +269,19 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         
     }
     
     private void getDevelopers()
     {
-        Log.d("DataTableActivity.getDevelopers()","called");
+        //Log.d("DatTbleActy.getDevs()","called");
          //devs = DBUtils.readCursorIntoList(getContentResolver().query(Developers.CONTENT_URI, null, null, null, null));
-        devs = new ArrayList<Developer>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("select distinct notes_owner from notes");
+        devs = new ArrayList<>();
+        String sql = "select distinct notes_owner from notes";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sql, null);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         if(cursor.getCount()>0)
         {
@@ -296,19 +297,20 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
+		db.close();
+		
           
-         Collections.sort((List<Developer>)devs);
+         Collections.sort(devs);
               
     }
     
     private void readDB()
     {
-        notes = new ArrayList<DevNote>();
-        StringBuilder sb = new StringBuilder();
-        sb.append("select date(notes_date) as notes_date, notes_owner, notes_note from notes order by date(notes_date) desc");
+        notes = new ArrayList<>();
+        String sqlString = "select date(notes_date) as notes_date, notes_owner, notes_note from notes order by date(notes_date) desc";
         DatabaseHelper dbHelper = new DatabaseHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        Cursor cursor = db.rawQuery(sqlString, null);
         int noteColumn = cursor.getColumnIndex(Notes.NOTE);
         int devColumn = cursor.getColumnIndex(Notes.OWNER);
         int dateColumn = cursor.getColumnIndex(Notes.DATE);
@@ -328,7 +330,8 @@ public class DataTableActivity extends Activity
             }while(cursor.moveToNext());
         }
         cursor.close();
-            
+        db.close();
+
     }
     
     private void exportReport()
@@ -357,7 +360,7 @@ public class DataTableActivity extends Activity
         }
         catch (FileNotFoundException e)
         {
-            Log.d("DataTableActivity", "Error exporting note: " + e.toString(), e);
+            //Log.d("DataTableActivity", "Error exporting note: " + e.toString(), e);
             Toast.makeText(this, "Error exporting note: " + e.toString(), Toast.LENGTH_LONG).show();
         }
         finally
@@ -461,11 +464,12 @@ public class DataTableActivity extends Activity
         return sb.toString();
     }
 
-    private void deleteNote(String date)
+    private void deleteNote(String date, String name)
     {
-        getContentResolver().delete(Notes.CONTENT_URI, "date(notes_date)='"+date+"' and notes_owner='"+currentOwner+"'" , null);
+        getContentResolver().delete(Notes.CONTENT_URI, "date(notes_date)='"+date+"' and notes_owner='"+name+"'" , null);
         getDeveloperNotes(currentOwner);
         setupTable();
+        aBar.setTitle("Dev Chat -  " + currentOwner);
     }
 
 }

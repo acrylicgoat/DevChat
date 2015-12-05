@@ -39,10 +39,7 @@ public class Developer implements Serializable, Comparable<Developer>
     //@Override
     public int compareTo(Developer another)
     {
-        int nameCompare = name.toUpperCase().trim().compareTo(another.name.toUpperCase().trim());
-        
-        return nameCompare;
-        
+        return name.toUpperCase().trim().compareTo(another.name.toUpperCase().trim());
         
     }
     

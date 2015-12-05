@@ -35,7 +35,7 @@ public class DBUtils
      */
     public static ArrayList<Developer> readCursorIntoList(Cursor c)
     {
-        ArrayList<Developer> devList = new ArrayList<Developer>();
+        ArrayList<Developer> devList = new ArrayList<>();
         
         int nameColumn = c.getColumnIndex(Developers.NAME); 
         if(c.getCount() > 0)
